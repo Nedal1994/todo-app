@@ -1,14 +1,12 @@
 import React from 'react'
-import {Button,FormGroup,InputGroup,Card} from '@blueprintjs/core'
+import {Button,FormGroup,InputGroup,Card,Elevation} from '@blueprintjs/core'
 
 export default function form(props) {
     return (
         <div>
             <form onSubmit={props.handleSubmit}>
-
-
                 <h2>Add To Do Item</h2>
-                <Card>
+                <Card interactive={true} elevation={Elevation.TWO}>
                     <FormGroup>
                         <label>
                             <span>To Do Item</span>
