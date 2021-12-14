@@ -1,29 +1,13 @@
-form{
-    width:25%;
-    font-family: calibri;
-    border-radius: 4px;
+.container {
+  width: 15%;
+  font-family: calibri;
+  position: relative;
+  left:10%;
+  padding: 2%;
+  display: inline-block;
+  justify-content: space-between;
 }
-.button{
-    background-color: rgb(13,110,253);
-    border: none;
-    color: white;
-    padding: 15px ;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    border-radius: 4px;
-}
-header
+nav
 {
-    padding: 10px;
-    background-color: rgb(65, 65, 65);
-    color: white;
-    font-family: calibri;
-}
-input:text{
-    padding:20px
-}
-div{
-    display:flexbox;
+  font-family: calibri;
 }
