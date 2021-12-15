@@ -1,76 +1,90 @@
 import React from 'react';
 import cookie from 'react-cookies';
 import jwt from 'jsonwebtoken';
-
+import { useState,useEffect } from 'react';
 
 const testUsers = {
-  admin: {password:'password', name:'Administrator', role:'admin', capabilities:['create','read','update','delete']},
-  editor: { password: 'password', name: 'Editor', role: 'editor', capabilities: ['read', 'update']},
-  writer: { password: 'password', name: 'Writer', role: 'writer', capabilities: ['create']},
+  admin: {
+    password: "password",
+    name: "Administrator",
+    role: "admin",
+    capabilities: ["create", "read", "update", "delete"],
+  },
+  editor: {
+    password: "password",
+    name: "Editor",
+    role: "editor",
+    capabilities: ["read", "update"],
+  },
+  writer: {
+    password: "password",
+    name: "Writer",
+    role: "writer",
+    capabilities: ["create"],
+  },
 };
 
 export const LoginContext = React.createContext();
 
-class LoginProvider extends React.Component {
+export default function LoginProvider(props) {
+  let [loggedIn, setloggedIn] = useState(false);
+  let [user, setUser] = useState({ capabilities: [] });
+  let [token, setToken] = useState("");
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      loggedIn: false,
-      can: this.can,
-      login: this.login,
-      logout: this.logout,
-      user: {capabilities:[]},
-    };
-  }
+  const can = (capability) => {
+    return user?.capabilities?.includes(capability);
+  };
 
-  can = (capability) => {
-    return this?.state?.user?.capabilities?.includes(capability);
-  }
-
-  login = (username, password) => {
+  const login = (username, password) => {
     if (testUsers[username]) {
-      // Create a "good" token, like you'd get from a server
-      const token = jwt.sign(testUsers[username], process.env.REACT_APP_SECRET);
-      this.validateToken(token);
+      const token = jwt.sign(
+        testUsers[username],
+        process.env.REACT_APP_SECRET || "2000"
+      );
+      validateToken(token);
     }
-  }
-
-  logout = () => {
-    this.setLoginState(false, null, {});
   };
 
-  validateToken = token => {
+  const logout = () => {
+    setLoginState(false, null, {});
+  };
+
+  const validateToken = async (token) => {
     try {
-      let user = jwt.verify(token, process.env.REACT_APP_SECRET);
-      this.setLoginState(true, token, user);
+      let user = jwt.verify(token, process.env.REACT_APP_SECRET || "2000");
+      setLoginState(true, token, user);
+    } catch (e) {
+      setLoginState(false, null, {});
+      console.log("Token Validation Error", e);
     }
-    catch (e) {
-      this.setLoginState(false, null, {});
-      console.log('Token Validation Error', e);
-    }
-
   };
 
-  setLoginState = (loggedIn, token, user) => {
-    cookie.save('auth', token);
-    this.setState({ token, loggedIn, user });
+  const setLoginState = (loggedIn, token, user) => {
+    cookie.save("auth", token);
+    setloggedIn(loggedIn);
+    setToken(token);
+    setUser(user);
   };
 
-  componentDidMount() {
+  useEffect(() => {
     const qs = new URLSearchParams(window.location.search);
-    const cookieToken = cookie.load('auth');
-    const token = qs.get('token') || cookieToken || null;
-    this.validateToken(token);
-  }
+    const cookieToken = cookie.load("auth");
+    const token = qs.get("token") || cookieToken || null;
+    validateToken(token);
+  });
 
-  render() {
-    return (
-      <LoginContext.Provider value={this.state}>
-        {this.props.children}
-      </LoginContext.Provider>
-    );
-  }
+  const state = {
+    loggedIn,
+    login,
+    logout,
+    user,
+    token,
+    can,
+  };
+
+  return (
+    <LoginContext.Provider value={state}>
+      {props.children}
+    </LoginContext.Provider>
+  );
 }
-
-export default LoginProvider;

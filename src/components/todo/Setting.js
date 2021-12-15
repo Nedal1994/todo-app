@@ -9,18 +9,15 @@ export default function Setting() {
   function handleSubmit(e) {
     e.preventDefault();
     settings.handleChangeNum(e.target.NumItem.value);
-    console.log(settings.numOfItems, "value", settings);
 
     let data = {
       numOfItems: e.target.NumItem.value,
       display:e.target.display.checked
     };
     localStorage.setItem("configStting", JSON.stringify(data));
-    console.log("localStorage")
   }
   return (
     <>
-      <Header />
       <Card className="text-center">
         <Card.Header>Edit Setting</Card.Header>
         <Card.Body>
