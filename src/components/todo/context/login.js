@@ -1,6 +1,5 @@
 import React from 'react';
 import {When} from 'react-if';
-
 import { LoginContext } from '../context/loginContext';
 
 class Login extends React.Component {
@@ -22,27 +21,30 @@ class Login extends React.Component {
 
   render() {
     return (
-      <>
+      <div className='box'>
         <When condition={this.context.loggedIn}>
           <button onClick={this.context.logout}>Log Out</button>
         </When>
 
         <When condition={!this.context.loggedIn}>
           <form onSubmit={this.handleSubmit}>
+            <h1>Login</h1><br/>
+            <label>Username</label><br/><br/>
             <input
-              placeholder="UserName"
+              className="text"
               name="username"
               onChange={this.handleChange}
-            />
+            /><br/><br/>
+            <label>Password</label><br/><br/>
             <input
-              placeholder="password"
+              className="text"
               name="password"
               onChange={this.handleChange}
-            />
-            <button>Login</button>
+            /><br/><br/>
+            <button className='button'>Login</button>
           </form>
         </When>
-      </>
+      </div>
     );
   }
 }

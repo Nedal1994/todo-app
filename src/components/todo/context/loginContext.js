@@ -25,7 +25,7 @@ const testUsers = {
 };
 
 export const LoginContext = React.createContext();
-
+const API = "https://lap8.herokuapp.com/";
 export default function LoginProvider(props) {
   let [loggedIn, setloggedIn] = useState(false);
   let [user, setUser] = useState({ capabilities: [] });
@@ -59,6 +59,21 @@ export default function LoginProvider(props) {
     }
   };
 
+  const signUp = async (username, password, role) => {
+    try {
+      let obj = {
+        username: username,
+        password: password,
+        role: role,
+      };
+      const response = await superagent.post(`${API}/signup`, obj);
+      console.log(response.body);
+      validateToken(response.body.token);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const setLoginState = (loggedIn, token, user) => {
     cookie.save("auth", token);
     setloggedIn(loggedIn);
@@ -80,6 +95,7 @@ export default function LoginProvider(props) {
     user,
     token,
     can,
+    signUp
   };
 
   return (
